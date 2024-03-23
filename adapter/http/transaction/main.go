@@ -18,14 +18,12 @@ func GetTransactions(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-type", "application/json")
 
-	salaryReceived := util.StringToTime("2024-03-22T21:33:00")
-
 	var transanctions = transaction.Transactions{
 		transaction.Transaction{
 			Title:     "Salário",
 			Amount:    1440.40,
 			Type:      0,
-			CreatedAt: salaryReceived,
+			CreatedAt: util.StringToTime("2024-03-22T21:33:00"),
 		},
 	}
 
