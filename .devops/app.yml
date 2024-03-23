@@ -5,3 +5,9 @@ services:
     container_name: "app_finance_go"
     ports:
       - 8080:8080
+    networks:
+      - minha-rede
+
+networks:
+  minha-rede:
+    external: true
