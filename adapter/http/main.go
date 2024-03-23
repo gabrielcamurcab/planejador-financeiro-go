@@ -7,20 +7,24 @@ import (
 	"github.com/gabrielcamurcab/planejador-financeiro-go/adapter/http/actuator"
 	TransactionHandler "github.com/gabrielcamurcab/planejador-financeiro-go/adapter/http/transaction"
 	"github.com/gabrielcamurcab/planejador-financeiro-go/repository/transaction"
+	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func Init(db *sql.DB) {
 	repo := transaction.NewTransactionRepository(db)
 	handler := TransactionHandler.NewTransactionHandler(repo)
+	r := mux.NewRouter()
 
-	http.HandleFunc("/transactions", handler.GetTransactions)
+	r.HandleFunc("/transactions", handler.GetTransactions).Methods("GET")
 
-	http.HandleFunc("/transactions/create", handler.CreateATransaction)
+	r.HandleFunc("/transactions", handler.CreateATransaction).Methods("POST")
 
-	http.HandleFunc("/health", actuator.Health)
+	r.HandleFunc("/health", actuator.Health).Methods("GET")
 
-	http.Handle("/metrics", promhttp.Handler())
+	r.Handle("/metrics", promhttp.Handler()).Methods("GET")
+
+	http.Handle("/", r)
 
 	http.ListenAndServe(":8080", nil)
 }
