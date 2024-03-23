@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"time"
 
 	"github.com/gabrielcamurcab/planejador-financeiro-go/model/transaction"
+	"github.com/gabrielcamurcab/planejador-financeiro-go/util"
 )
 
 func GetTransactions(w http.ResponseWriter, r *http.Request) {
@@ -18,8 +18,7 @@ func GetTransactions(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-type", "application/json")
 
-	var layout = "2006-01-02T15:04:05"
-	salaryReceived, _ := time.Parse(layout, "2024-03-22T21:33:00")
+	salaryReceived := util.StringToTime("2024-03-22T21:33:00")
 
 	var transanctions = transaction.Transactions{
 		transaction.Transaction{
