@@ -2,44 +2,50 @@ package transaction
 
 import (
 	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
 
-	"github.com/gabrielcamurcab/planejador-financeiro-go/model/transaction"
-	"github.com/gabrielcamurcab/planejador-financeiro-go/util"
+	"github.com/gabrielcamurcab/planejador-financeiro-go/repository/transaction"
 )
 
-func GetTransactions(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-
-	w.Header().Set("Content-type", "application/json")
-
-	var transanctions = transaction.Transactions{
-		transaction.Transaction{
-			Title:     "Salário",
-			Amount:    1440.40,
-			Type:      0,
-			CreatedAt: util.StringToTime("2024-03-22T21:33:00"),
-		},
-	}
-
-	_ = json.NewEncoder(w).Encode(transanctions)
+type TransactionHandler struct {
+	repo *transaction.TransactionRepository
 }
 
-func CreateATransaction(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
+// Criar um construtor diretamente para TransactionHandler que aceita TransactionRepository
+func NewTransactionHandler(repo *transaction.TransactionRepository) *TransactionHandler {
+	return &TransactionHandler{repo: repo}
+}
+
+func (handler *TransactionHandler) GetTransactions(w http.ResponseWriter, r *http.Request) {
+	transactions, err := handler.repo.GetTransactions()
+	if err != nil {
+		http.Error(w, "Erro ao buscar transações", http.StatusInternalServerError)
 		return
 	}
 
-	var res = transaction.Transactions{}
-	var body, _ = io.ReadAll(r.Body)
+	w.Header().Set("Content-Type", "application/json")
+	if transactions != nil {
+		json.NewEncoder(w).Encode(transactions)
+	} else {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]string{"message": "Nenhuma transação encontrada"})
+	}
+}
 
-	_ = json.Unmarshal(body, &res)
+func (handler *TransactionHandler) CreateATransaction(w http.ResponseWriter, r *http.Request) {
+	var t transaction.Transaction
+	err := json.NewDecoder(r.Body).Decode(&t)
+	if err != nil {
+		http.Error(w, "Erro ao decodificar o JSON da transação", http.StatusBadRequest)
+		return
+	}
 
-	fmt.Print(res)
+	err = handler.repo.InsertTransaction(&t)
+	if err != nil {
+		http.Error(w, "Erro ao criar a transação", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Transação cadastrada com sucesso!"})
 }
