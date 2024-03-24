@@ -58,3 +58,28 @@ func (repo *TransactionRepository) GetTransactions() ([]*Transaction, error) {
 
 	return transactions, nil
 }
+
+func (repo *TransactionRepository) GetPositiveTransactions() ([]*Transaction, error) {
+	var transactions []*Transaction
+
+	rows, err := repo.db.Query("SELECT id, title, amount, created_at, updated_at FROM transactions")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		t := &Transaction{}
+		err := rows.Scan(&t.ID, &t.Title, &t.Amount, &t.CreatedAt, &t.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+		transactions = append(transactions, t)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return transactions, nil
+}
