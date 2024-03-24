@@ -2,6 +2,7 @@ package transaction
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 )
 
@@ -107,4 +108,22 @@ func (repo *TransactionRepository) GetNegativeTransactions() ([]*Transaction, er
 	}
 
 	return transactions, nil
+}
+
+func (repo *TransactionRepository) GetTransactionById(id int) (*Transaction, error) {
+	query := "SELECT id, title, amount, type, created_at, updated_at FROM transactions WHERE id = $1"
+
+	row := repo.db.QueryRow(query, id)
+
+	var t Transaction
+
+	err := row.Scan(&t.ID, &t.Title, &t.Amount, &t.Type, &t.CreatedAt, &t.UpdatedAt)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("transação com ID %d não localizada", id)
+		}
+		return nil, err
+	}
+
+	return &t, nil
 }
