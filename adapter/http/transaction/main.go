@@ -65,3 +65,19 @@ func (handler *TransactionHandler) GetPositiveTransactions(w http.ResponseWriter
 		json.NewEncoder(w).Encode(map[string]string{"message": "Nenhuma transação de entrada foi encontrada"})
 	}
 }
+
+func (handler *TransactionHandler) GetNegativeTransactions(w http.ResponseWriter, r *http.Request) {
+	transactions, err := handler.repo.GetNegativeTransactions()
+	if err != nil {
+		http.Error(w, "Erro ao buscar transações", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-type", "application/json")
+	if transactions != nil {
+		json.NewEncoder(w).Encode(transactions)
+	} else {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]string{"message": "Nenhuma transação de saída foi encontrada"})
+	}
+}

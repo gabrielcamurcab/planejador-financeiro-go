@@ -18,6 +18,7 @@ func Init(db *sql.DB) {
 
 	r.HandleFunc("/transactions", handler.GetTransactions).Methods("GET")
 	r.HandleFunc("/transactions/positive", handler.GetPositiveTransactions).Methods("GET")
+	r.HandleFunc("/transactions/negative", handler.GetNegativeTransactions).Methods("GET")
 
 	r.HandleFunc("/transactions", handler.CreateATransaction).Methods("POST")
 
