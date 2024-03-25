@@ -1,0 +1,3 @@
+FROM bitnami/prometheus:latest
+
+COPY .devops/prometheus.yml /etc/prometheus/prometheus.yml
