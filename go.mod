@@ -3,6 +3,7 @@ module github.com/gabrielcamurcab/planejador-financeiro-go
 go 1.22
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect

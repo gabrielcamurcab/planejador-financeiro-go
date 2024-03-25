@@ -75,6 +75,7 @@ func (repo *TransactionRepository) GetPositiveTransactions() ([]*Transaction, er
 		if err != nil {
 			return nil, err
 		}
+
 		transactions = append(transactions, t)
 	}
 
