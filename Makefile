@@ -6,3 +6,6 @@ build-image:
 run-app:
 	docker-compose -f .devops/app.yml up -d
 	docker-compose -f .devops/prometheus.yml up -d
+
+run-test:
+	docker-compose -f .devops/app.yml run app go test ./...
