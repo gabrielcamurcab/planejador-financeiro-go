@@ -10,16 +10,16 @@ import (
 )
 
 type TransactionHandler struct {
-	repo *transaction.TransactionRepository
+	Repo *transaction.TransactionRepository
 }
 
 // Criar um construtor diretamente para TransactionHandler que aceita TransactionRepository
 func NewTransactionHandler(repo *transaction.TransactionRepository) *TransactionHandler {
-	return &TransactionHandler{repo: repo}
+	return &TransactionHandler{Repo: repo}
 }
 
 func (handler *TransactionHandler) GetTransactions(w http.ResponseWriter, r *http.Request) {
-	transactions, err := handler.repo.GetTransactions()
+	transactions, err := handler.Repo.GetTransactions()
 	if err != nil {
 		http.Error(w, "Erro ao buscar transações", http.StatusInternalServerError)
 		return
@@ -42,7 +42,7 @@ func (handler *TransactionHandler) CreateATransaction(w http.ResponseWriter, r *
 		return
 	}
 
-	err = handler.repo.InsertTransaction(&t)
+	err = handler.Repo.InsertTransaction(&t)
 	if err != nil {
 		http.Error(w, "Erro ao criar a transação", http.StatusInternalServerError)
 		return
@@ -53,7 +53,7 @@ func (handler *TransactionHandler) CreateATransaction(w http.ResponseWriter, r *
 }
 
 func (handler *TransactionHandler) GetPositiveTransactions(w http.ResponseWriter, r *http.Request) {
-	transactions, err := handler.repo.GetPositiveTransactions()
+	transactions, err := handler.Repo.GetPositiveTransactions()
 	if err != nil {
 		http.Error(w, "Erro ao buscar transações", http.StatusInternalServerError)
 		return
@@ -69,7 +69,7 @@ func (handler *TransactionHandler) GetPositiveTransactions(w http.ResponseWriter
 }
 
 func (handler *TransactionHandler) GetNegativeTransactions(w http.ResponseWriter, r *http.Request) {
-	transactions, err := handler.repo.GetNegativeTransactions()
+	transactions, err := handler.Repo.GetNegativeTransactions()
 	if err != nil {
 		http.Error(w, "Erro ao buscar transações", http.StatusInternalServerError)
 		return
@@ -92,7 +92,7 @@ func (handler *TransactionHandler) GetTransactionById(w http.ResponseWriter, r *
 		return
 	}
 
-	transaction, err := handler.repo.GetTransactionById(transactionId)
+	transaction, err := handler.Repo.GetTransactionById(transactionId)
 	if err != nil {
 		http.Error(w, "Erro ao buscar transações", http.StatusInternalServerError)
 		return
