@@ -9,6 +9,8 @@ import (
 	"github.com/gabrielcamurcab/planejador-financeiro-go/util"
 )
 
+// Testes
+
 func TestInsertTransaction(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
