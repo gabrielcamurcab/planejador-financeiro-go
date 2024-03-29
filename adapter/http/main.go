@@ -6,6 +6,7 @@ import (
 
 	"github.com/gabrielcamurcab/planejador-financeiro-go/adapter/http/actuator"
 	TransactionHandler "github.com/gabrielcamurcab/planejador-financeiro-go/adapter/http/transaction"
+	"github.com/gabrielcamurcab/planejador-financeiro-go/adapter/http/user"
 	"github.com/gabrielcamurcab/planejador-financeiro-go/repository/transaction"
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -20,8 +21,9 @@ func Init(db *sql.DB) {
 	r.HandleFunc("/transactions/positive", handler.GetPositiveTransactions).Methods("GET")
 	r.HandleFunc("/transactions/negative", handler.GetNegativeTransactions).Methods("GET")
 	r.HandleFunc("/transactions/{id}", handler.GetTransactionById).Methods("GET")
-
 	r.HandleFunc("/transactions", handler.CreateATransaction).Methods("POST")
+
+	r.HandleFunc("/user", user.CreateUser).Methods("POST")
 
 	r.HandleFunc("/health", actuator.Health).Methods("GET")
 
